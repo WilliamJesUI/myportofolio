@@ -6,12 +6,12 @@
 
 :root {
     --ink: #1c1917;
-    --paper: #faf6f0;
-    --accent: #d95d39;
-    --accent-dark: #a8442a;
-    --line: #e3d9c9;
-    --text-muted: #6b6459;
-    --radius: 4px;
+    --paper: #ffeaea;
+    --accent: #ff4f56;
+    --accent-dark: #ff6565;
+    --line: #ff3d3d;
+    --text-muted: #000000;
+    --radius: 80px;
 }
 
 body {
@@ -43,7 +43,7 @@ h1, .brand {
 }
 
 .brand {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     font-weight: 700;
     color: var(--ink);
     text-decoration: none;
@@ -134,11 +134,13 @@ h1, .brand {
     background-color: var(--ink);
     border-radius: var(--radius);
     padding: 0.5rem 1.1rem;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.5s ease;
+    transition: transform 0.2s ease;
 }
 
 .social-link:hover {
     background-color: var(--accent);
+    transform: scale(1.15);
 }
 
 .hero-photo {
@@ -167,6 +169,18 @@ h1, .brand {
     object-fit: cover;
     border-radius: var(--radius);
     border: 3px solid var(--ink);
+}
+
+.avatar:hover {
+    position: relative;
+    z-index: 1;
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: var(--radius);
+    border: 3px solid var(--ink);
+    content : url("/static/img/the_dawg_in_me.png")
 }
 
 .site-footer {
