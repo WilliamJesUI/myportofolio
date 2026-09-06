@@ -25,6 +25,10 @@ h1, .brand {
     font-family: "Space Grotesk", -apple-system, sans-serif;
 }
 
+a {
+    color: var(--paper);
+}
+
 .container {
     max-width: 960px;
     margin: 0 auto;
@@ -63,6 +67,8 @@ h1, .brand {
 .hero {
     padding: 4.5rem 0 5rem;
 }
+
+
 
 .hero-grid {
     display: grid;
@@ -206,4 +212,58 @@ h1, .brand {
     .social-links {
         justify-content: flex-start;
     }
+}
+
+.flip-cards {
+    display: flex;
+    align-items: center;
+    padding: 1.25rem 1.5rem;
+    flex-wrap: wrap;
+    gap: 0.2rem;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.flip-card {
+      background-color: transparent;
+      width: 300px;
+      height: 200px;
+      border: 1px solid #f1f1f1;
+
+}
+
+/* This container is needed to position the front and back side */
+.flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+}
+
+
+.flip-card:hover .flip-card-inner {
+    transform: rotateY(180deg);
+}
+
+/* Position the front and back side */
+.flip-card-front, .flip-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden; /* Safari */
+      backface-visibility: hidden;
+}
+
+.flip-card-front {
+    background-color: #bbb;
+    color: black;
+}
+
+/* Style the back side */
+.flip-card-back {
+    background-color: var(--accent);
+    color: var(--paper);
+    transform: rotateY(180deg);
 }
