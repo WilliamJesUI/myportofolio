@@ -266,3 +266,9 @@ a {
     color: var(--paper);
     transform: rotateY(180deg);
 }
+
+/* Style the image of the flip card */
+.flip-card-img{
+    width: 300px;
+    height: 200px;
+}
