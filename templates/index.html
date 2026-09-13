@@ -27,6 +27,7 @@
                     <p class="hero-kicker">Computer Science &middot; Universitas Indonesia</p>
                     <h1>{{ name }}</h1>
                 </div>
+
                 <div class="hero-photo">
                     <div class="photo-block"></div>
                     <img class="avatar" src="/static/img/william_main.png" alt="Photo of {{ name }}">
@@ -58,42 +59,26 @@
                 <h2>My Personal Projects</h2>
             </div>
             <div class = "container flip-cards">
+                {% for project in project_list %}
+
                 <div class="flip-card">
-                            <div class="flip-card-inner">
-                                <div class="flip-card-front">
-                                    <img class = flip-card-img src="/static/img/BurhanQuest.png" alt="Burhan Quest">
-                                </div>
-                                <div class="flip-card-back">
-                                    <h3>Burhan Quest</h3>
-                                    <p>A text based fantasy RPG, where players have to go on beat bosses! </p>
-                                    <p>We love Burhan!</p>
-                                </div>
-                            </div>
-                    </div>
-                <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img class = flip-card-img src="/static/img/flaepy_bird.png" alt="Flaepy Bird">
-                            </div>
-                            <div class="flip-card-back">
-                                <h3>Fake Flappy Bird</h3>
-                                <p>An almost exact copy of the beloved flappy bird using the Pygame library!</p>
-                                <a href="https://drive.google.com/file/d/1Xpcz0zyDkOvkb0PjjOu8E302KuPPX82f/view?usp=sharing" target="_blank">Download here!</a>
-                            </div>
+                    <div class="flip-card-inner">
+                        <div class="flip-card-front">
+                            <img class = flip-card-img src="{{ project.thumbnail }}" alt="{{ project.name }}">
+                        </div>
+                        <div class="flip-card-back">
+                            <h3>{{ project.name }}</h3>
+                            <p>{{ project.description }}</p>
+                            <a href = "{{ project.download_url }}" target="_blank">Download here!</a>
                         </div>
                     </div>
-                <div class="flip-card">
-                        <div class="flip-card-inner">
-                            <div class="flip-card-front">
-                                <img class = flip-card-img src="/static/img/RAINBOW_LED.png" alt="Rainbow Led">
-                            </div>
-                            <div class="flip-card-back">
-                                <h3>Rainbow LED</h3>
-                                <p>Made a cool looking rainbow LED during my first semester. Very colourful and yummy!</p>
-                                <a href="https://drive.google.com/file/d/1dtMIWF47rB09E1-MuPgsOtJydjtiW9_2/view?usp=drive_link" target="_blank">Check it out!</a>
-                            </div>
-                        </div>
-                    </div>
+                </div>
+
+                {% empty %}
+                <p class="empty-state">
+                    No Project has been added yet!
+                </p>
+                {% endfor %}
             </div>
         </section>
     </main>

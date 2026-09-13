@@ -1,6 +1,7 @@
 from django.shortcuts import render
 
 from main.models import Experience
+from main.models import Project
 
 
 def show_main(request):
@@ -12,6 +13,7 @@ def show_main(request):
             "A Computer Science student at the University of Indonesia. Ready to overcome every obstacle cuz I got that dawg in me!  "
             "Hover over me to see the dawg in me!"
         ),
+        "project_list": Project.objects.all(),
     }
     return render(request, "index.html", context)
 
