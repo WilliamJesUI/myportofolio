@@ -144,3 +144,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# gunakan https:// untuk trailing urlnya
+CSRF_TRUSTED_ORIGINS = ["https://william-jesiel-myportofolio.pws.cs.ui.ac.id/"]
