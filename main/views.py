@@ -9,7 +9,7 @@ from main.models import Achievement
 from main.models import Experience
 from main.models import Project
 
-from main.forms import ExperienceForm
+from main.forms import AchievementForm, ExperienceForm, ProjectForm
 
 
 def show_main(request):
@@ -25,6 +25,22 @@ def show_main(request):
     }
     return render(request, "index.html", context)
 
+def create_project(request):
+    form = ProjectForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Successfully added a new project!!")
+        return redirect("main:show_main")
+
+    context = {
+        "name": "William",
+        "form": form,
+    }
+    return render(request, "project_form.html", context)
+
+
+
 
 def show_experience(request):
     context = {
@@ -38,14 +54,14 @@ def create_experience(request):
 
     if request.method == "POST" and form.is_valid():
         form.save()
-        messages.success(request, "Successfully added new experience!!")
+        messages.success(request, "Successfully added a new experience!!")
         return redirect("main:show_experience")
 
     context = {
         "name": "William",
         "form": form,
     }
-    return render(request, "projects_form.html", context)
+    return render(request, "experience_form.html", context)
 
 
 def show_achievement(request):
@@ -54,3 +70,17 @@ def show_achievement(request):
         "achievement_list": Achievement.objects.all(),
     }
     return render(request, "achievement.html", context)
+
+def create_achievement(request):
+    form = AchievementForm(request.POST or None)
+
+    if request.method == "POST" and form.is_valid():
+        form.save()
+        messages.success(request, "Successfully added a new achievement!!")
+        return redirect("main:show_achievement")
+
+    context = {
+        "name": "William",
+        "form": form
+    }
+    return render(request, "achievement_form.html", context)
