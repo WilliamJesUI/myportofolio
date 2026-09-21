@@ -24,7 +24,7 @@
                            placeholder="Search based on name"
                            class="project-search__input"
                            aria-label="Search based on name">
-                    <button type="submit" class="button">Cari</button>
+                    <button type="submit" class="button">Search</button>
                 </form>
                 <div class="experience-grid project-grid">
                     {% for achievement in achievement_list %}
@@ -46,9 +46,9 @@
                         </article>
                     {% empty %}
                         {% if name_query %}
-                            <p class="empty-state">Tidak ada proyek dengan nama tersebut.</p>
+                            <p class="empty-state">No Achievement found.</p>
                         {% else %}
-                            <p class="empty-state">Belum ada proyek yang ditambahkan.</p>
+                            <p class="empty-state">No Achievements yet.</p>
                         {% endif %}
                     {% endfor %}
                 </div>
