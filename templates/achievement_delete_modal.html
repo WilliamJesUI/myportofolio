@@ -1,0 +1,43 @@
+<p class="experience-status">
+    <button type="button"
+            class="button button-danger"
+            popovertarget="delete-project-{{ achievement.id }}"
+            aria-label="Hapus {{ achievement.name }}"
+            title="Delete Achievement">
+        Delete Achievement
+    </button>
+</p>
+<div id="delete-project-{{ achievement.id }}"
+     class="project-delete-modal"
+     popover="auto"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="delete-project-title-{{ achievement.id }}">
+    <button type="button"
+            class="project-delete-modal__backdrop"
+            popovertarget="delete-project-{{ achievement.id }}"
+            popovertargetaction="hide"
+            aria-label="Close"></button>
+    <div class="project-delete-modal__content">
+        <button type="button"
+                class="project-delete-modal__close"
+                popovertarget="delete-project-{{ achievement.id }}"
+                popovertargetaction="hide"
+                aria-label="Close">×</button>
+        <h2 id="delete-project-title-{{ achievement.id }}">Delete Achivement?</h2>
+        <p>
+            Are you sure in deleting
+            <strong>{{ achievement.name }}</strong>?
+        </p>
+        <div class="project-delete-modal__actions">
+            <button type="button"
+                    class="button button-secondary"
+                    popovertarget="delete-project-{{ achievement.id }}"
+                    popovertargetaction="hide">Cancel</button>
+            <form method="post" action="{% url 'main:delete_achievement' achievement.id %}">
+                {% csrf_token %}
+                <button type="submit" class="button button-danger">Yes</button>
+            </form>
+        </div>
+    </div>
+</div>

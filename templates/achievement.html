@@ -1,54 +1,58 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Experience - {{ name }}</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/style.css">
-</head>
-<body>
-    <header class="site-header">
-        <div class="container">
-            <a href="{% url 'main:show_main' %}" class="brand">{{ name }}</a>
-            <nav>
-                <a href="{% url 'main:show_main' %}">Profile</a>
-                <a href="{% url 'main:show_experience' %}">Experience</a>
-                <a href="{% url 'main:show_achievement' %}">Achievement</a>
-            </nav>
-        </div>
-    </header>
-
+{% extends "base.html" %}
+{% block meta %}
+    <title>Achievement - {{ name }}</title>
+{% endblock meta %}
+{% block content %}
     <main>
         <section class="experience-section" id="experience">
             <div class="container">
-                <p class="section-kicker">My dubs so far</p>
-                <h1>Achievement</h1>
-
-                <div class="experience-grid">
+                <p class="section-kicker">My Achievement</p>
+                <div class="project-header">
+                    <h1>My Achievements</h1>
+                    <a href="{% url 'main:create_achievement' %}"
+                       class="button project-add-button">
+                        <span aria-hidden="true">+</span>
+                        Add Achievement
+                    </a>
+                </div>
+                <form method="get"
+                      action="{% url 'main:show_achievement' %}"
+                      class="project-search">
+                    <input type="search"
+                           name="name"
+                           value="{{ name_query }}"
+                           placeholder="Search based on name"
+                           class="project-search__input"
+                           aria-label="Search based on name">
+                    <button type="submit" class="button">Cari</button>
+                </form>
+                <div class="experience-grid project-grid">
                     {% for achievement in achievement_list %}
                         <article class="experience-card">
+                            {% if achievement.thumbnail %}
+                                <img src="{{ achievement.thumbnail }}"
+                                     alt="Image {{ achievement.name }}"
+                                     class="achievement-image">
+                            {% endif %}
                             <h2>{{ achievement.name }}</h2>
-                            <p class="experience-description">
-                                {{ achievement.description }}
-                            </p>
+                            <p class="experience-description">{{ achievement.description }}</p>
+                            <div class="project-card-actions">
+                                <div class="project-actions">
+                                    <a href="{% url 'main:update_achievement' achievement.id %}"
+                                       class="button">Update</a>
+                                    {% include "achievement_delete_modal.html" with achievement=achievement %}
+                                </div>
+                            </div>
                         </article>
                     {% empty %}
-                        <p class="empty-state">
-                            William is kinda achievementless rn...
-                        </p>
+                        {% if name_query %}
+                            <p class="empty-state">Tidak ada proyek dengan nama tersebut.</p>
+                        {% else %}
+                            <p class="empty-state">Belum ada proyek yang ditambahkan.</p>
+                        {% endif %}
                     {% endfor %}
                 </div>
             </div>
         </section>
     </main>
-
-    <footer class="site-footer">
-        <div class="container">
-            <p>&copy; 2026 {{ name }}. Fakultas Ilmu Komputer KKI, Universitas Indonesia.</p>
-        </div>
-    </footer>
-</body>
-</html>
+{% endblock content %}

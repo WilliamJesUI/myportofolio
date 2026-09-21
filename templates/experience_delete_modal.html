@@ -1,0 +1,43 @@
+<p class="experience-status">
+    <button type="button"
+            class="button button-danger"
+            popovertarget="delete-project-{{ experience.id }}"
+            aria-label="Hapus {{ experience.name }}"
+            title="Delete Experience">
+        Delete Experience
+    </button>
+</p>
+<div id="delete-project-{{ experience.id }}"
+     class="project-delete-modal"
+     popover="auto"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="delete-project-title-{{ experience.id }}">
+    <button type="button"
+            class="project-delete-modal__backdrop"
+            popovertarget="delete-project-{{ experience.id }}"
+            popovertargetaction="hide"
+            aria-label="Close"></button>
+    <div class="project-delete-modal__content">
+        <button type="button"
+                class="project-delete-modal__close"
+                popovertarget="delete-project-{{ experience.id }}"
+                popovertargetaction="hide"
+                aria-label="Close">×</button>
+        <h2 id="delete-project-title-{{ experience.id }}">Delete Experience?</h2>
+        <p>
+            Are you sure in deleting
+            <strong>{{ experience.name }}</strong>?
+        </p>
+        <div class="project-delete-modal__actions">
+            <button type="button"
+                    class="button button-secondary"
+                    popovertarget="delete-project-{{ experience.id }}"
+                    popovertargetaction="hide">Cancel</button>
+            <form method="post" action="{% url 'main:delete_experience' experience.id %}">
+                {% csrf_token %}
+                <button type="submit" class="button button-danger">Yes</button>
+            </form>
+        </div>
+    </div>
+</div>
