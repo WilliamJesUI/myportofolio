@@ -23,3 +23,11 @@ I mainly studied from the W3school website! I found their premade templates real
 I still have not used AI in the making of this assignment. I felt like this part is more straightforward because I've watched a free lecture from CS50W Harvard in youtube that discusses about the MVT. The explanation was amazing and I was able to immediately implement it by referring to their notes online. Of course I also found the tutorial 2 helpful, I followed the steps there to create my new models 'Project' and 'Achievement'. Unit tests weren't that bad aswell because I previously learned it in DDP2. 
 
 Low-key I don't know how much longer I can survive without AI. I want to make my website beautiful but it seems so impossible without AI because I don't have much time :( CSS is so hard.
+
+### Assignment 3
+1. Creating HTML forms manually can be extremely tedious and time-consuming. It will also take longer time to refactor or edit the forms. So instead we use Django's ModelForm which is much more convenient. A csrf token increases safety as it makes sure the forms sent is actually from you the user and not an external malicious party.
+2. JSON is easier to use than XML. It is also highly compatible with javascript a language that is very common in modern web applications.
+3. So the user would send in a request. urls.py sees the path matches "api/achievements/" and routes the request to get_achievements_json. The function in views will then fetch the data from database which is then serialized meaning it is converted from python objects to JSON. Then the JSON is finally sent back to the user/client.
+
+AI disclosure
+I asked AI (Claude) for help in the creation of the update feature because I was stuck and had no idea how to implement it. I mainly asked for the general idea by prompting "How might I implement an update button beside the delete button. What steps should I take." Then claude generate the steps and some boilerplate which I then used as reference in helping me create the update feature. I also used claude to help with debugging the search bar which I also struggled to implement. 
