@@ -7,8 +7,8 @@
 :root {
     --ink: #1c1917;
     --paper: #ffeaea;
-    --accent: #ff4f56;
-    --accent-dark: #ff6565;
+    --accent: #ff6468;
+    --accent-dark: #ff4646;
     --line: #ff3d3d;
     --text-muted: #000000;
     --radius: 10px;
@@ -24,6 +24,7 @@ body {
 h1, .brand {
     font-family: "Space Grotesk", -apple-system, sans-serif;
 }
+
 
 a {
     color: var(--paper);
@@ -188,9 +189,11 @@ a {
     content : url("/static/img/the_dawg_in_me.png")
 }
 
+footer{
+    background-color: var(--accent);
+}
 .site-footer {
     padding: 1.5rem;
-    color: var(--text-muted);
     font-size: 0.85rem;
     border-top: 1px solid var(--line);
 }
@@ -213,6 +216,41 @@ a {
     }
 }
 
+.subheader-container{
+    padding-bottom: 100px 0;
+    text-align: center;
+}
+
+.subheader-container h2{
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    color: white;
+    font-size: 48px;
+    background: #ff6565;
+}
+
+.project-description-container h2{
+    font-family: "Space Grotesk", -apple-system, sans-serif;
+    font-size: 40px;
+    color: white;
+}
+
+.project-description-container p{
+    font-size: 30px;
+    color: white;
+}
+
+.flip-card-section{
+    background: #1c1917;
+}
+.flip-cards-container{
+    display: grid;
+    flex-wrap: wrap;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 450px), 1fr));
+    align-content: center;
+    justify-content: center;
+    padding: 67px;
+
+}
 .flip-cards {
     display: flex;
     align-items: center;
@@ -224,21 +262,25 @@ a {
 }
 
 .flip-card {
-      background-color: transparent;
-      width: 300px;
-      height: 200px;
-      border: 1px solid #f1f1f1;
+    background-color: #f1f1f1;
+    width: 100%;
+    max-width: 450px;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    border: 3px solid #f1f1f1;
+    border-radius: 50px;
 
 }
 
 /* This container is needed to position the front and back side */
 .flip-card-inner {
-      position: relative;
-      width: 100%;
-      height: 100%;
-      text-align: center;
-      transition: transform 0.8s;
-      transform-style: preserve-3d;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    text-align: center;
+    transition: transform 0.2s;
+    transform-style: preserve-3d;
+
 }
 
 
@@ -248,11 +290,12 @@ a {
 
 /* Position the front and back side */
 .flip-card-front, .flip-card-back {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      -webkit-backface-visibility: hidden;
-      backface-visibility: hidden;
+    position: absolute;
+    border-radius: 50px;
+    width: 100%;
+    height: 100%;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 .flip-card-front {
@@ -269,8 +312,9 @@ a {
 
 /* Style the image of the flip card */
 .flip-card-img{
-    width: 300px;
-    height: 200px;
+    width: 100%;
+    height: 100%;
+    border-radius: 50px;
 }
 
 
