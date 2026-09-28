@@ -1,11 +1,13 @@
 <p class="experience-status">
-    <button type="button"
-            class="button button-danger"
-            popovertarget="delete-project-{{ achievement.id }}"
-            aria-label="Hapus {{ achievement.name }}"
-            title="Delete Achievement">
-        Delete Achievement
-    </button>
+    {% if user.is_superuser %}
+        <button type="button"
+                class="button button-danger"
+                popovertarget="delete-project-{{ achievement.id }}"
+                aria-label="Hapus {{ achievement.name }}"
+                title="Delete Achievement">
+            Delete Achievement
+        </button>
+    {% endif %}
 </p>
 <div id="delete-project-{{ achievement.id }}"
      class="project-delete-modal"

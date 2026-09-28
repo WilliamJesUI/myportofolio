@@ -9,11 +9,13 @@
                 <p class="section-kicker">My Achievement</p>
                 <div class="project-header">
                     <h1>My Achievements</h1>
-                    <a href="{% url 'main:create_achievement' %}"
-                       class="button project-add-button">
-                        <span aria-hidden="true">+</span>
-                        Add Achievement
-                    </a>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'main:create_achievement' %}"
+                           class="button project-add-button">
+                            <span aria-hidden="true">+</span>
+                            Add Achievement
+                        </a>
+                    {% endif %}
                 </div>
                 <form method="get"
                       action="{% url 'main:show_achievement' %}"
@@ -26,6 +28,9 @@
                            aria-label="Search based on name">
                     <button type="submit" class="button">Search</button>
                 </form>
+                {% for message in messages %}
+                    <p class="form-message">{{ message }}</p>
+                {% endfor %}
                 <div class="experience-grid project-grid">
                     {% for achievement in achievement_list %}
                         <article class="experience-card">
@@ -38,8 +43,11 @@
                             <p class="experience-description">{{ achievement.description }}</p>
                             <div class="project-card-actions">
                                 <div class="project-actions">
-                                    <a href="{% url 'main:update_achievement' achievement.id %}"
-                                       class="button">Update</a>
+                                    {% include "components/achievement_flame.html" with achievement=achievement %}
+                                    {% if perms.main.change_achievement %}
+                                        <a href="{% url 'main:update_achievement' achievement.id %}"
+                                           class="button">Update</a>
+                                    {% endif %}
                                     {% include "achievement_delete_modal.html" with achievement=achievement %}
                                 </div>
                             </div>

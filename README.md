@@ -31,3 +31,8 @@ Low-key I don't know how much longer I can survive without AI. I want to make my
 
 AI disclosure
 I asked AI (Claude) for help in the creation of the update feature because I was stuck and had no idea how to implement it. I mainly asked for the general idea by prompting "How might I implement an update button beside the delete button. What steps should I take." Then claude generate the steps and some boilerplate which I then used as reference in helping me create the update feature. I also used claude to help with debugging the search bar which I also struggled to implement. 
+
+### Assignment 4
+No reflective questions this week
+
+AI disclosure. Used claude in helping creating the editor user. I prompted to teach me the concept and general idea on what user groups are and how might I implement to my code. He gave me the syntax and code snippet which I then modify and insert into my program. For the other features (starring, hiding UI, and login), I mainly refer to the tutorial and W3Schools as usual.

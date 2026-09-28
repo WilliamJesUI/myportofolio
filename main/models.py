@@ -1,12 +1,14 @@
 import uuid
 
 from django.db import models
+from django.contrib.auth.models import User
 
 class Achievement(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     name = models.CharField(max_length=255)
     description = models.TextField()
     thumbnail = models.URLField(blank=True, null=True)
+    flamed_by = models.ManyToManyField(User, related_name="flamed_achievements", blank=True)
 
     def __str__(self):
         return self.name
@@ -40,6 +42,9 @@ class Experience(models.Model):
         default="full-time",
     )
     thumbnail = models.URLField(blank=True, null=True)
+    starred_by = models.ManyToManyField(
+        User, related_name="starred_experiences", blank=True
+    )
 
 
     def __str__(self):

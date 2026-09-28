@@ -9,11 +9,13 @@
                 <p class="section-kicker">My Experience</p>
                 <div class="project-header">
                     <h1>My Experiences</h1>
-                    <a href="{% url 'main:create_experience' %}"
-                       class="button project-add-button">
-                        <span aria-hidden="true">+</span>
-                        Add Experience
-                    </a>
+                    {% if user.is_superuser %}
+                        <a href="{% url 'main:create_experience' %}"
+                           class="button project-add-button">
+                            <span aria-hidden="true">+</span>
+                            Add Experience
+                        </a>
+                    {% endif %}
                 </div>
                 <form method="get"
                       action="{% url 'main:show_experience' %}"
@@ -26,6 +28,9 @@
                            aria-label="Search based on title">
                     <button type="submit" class="button">Search</button>
                 </form>
+                {% for message in messages %}
+                    <p class="form-message">{{ message }}</p>
+                {% endfor %}
                 <div class="experience-grid project-grid">
                     {% for experience in experience_list %}
                         <article class="experience-card">
@@ -33,8 +38,11 @@
                             <p class="experience-description">{{ experience.description }}</p>
                             <div class="project-card-actions">
                                 <div class="project-actions">
-                                    <a href="{% url 'main:update_experience' experience.id %}"
-                                       class="button">Update</a>
+                                    {% include "components/experience_star.html" with experience=experience %}
+                                    {% if perms.main.change_experience %}
+                                        <a href="{% url 'main:update_experience' experience.id %}"
+                                           class="button">Update</a>
+                                    {% endif %}
                                     {% include "experience_delete_modal.html" with experience=experience %}
                                 </div>
                             </div>
