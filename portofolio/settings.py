@@ -146,4 +146,4 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # gunakan https:// untuk trailing urlnya
-CSRF_TRUSTED_ORIGINS = ["https://william-jesiel-myportofolio.pws.cs.ui.ac.id/"]
+CSRF_TRUSTED_ORIGINS = ["https://william-jesiel-myportofolio.pws.cs.ui.ac.id"]
