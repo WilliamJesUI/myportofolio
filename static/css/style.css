@@ -363,7 +363,14 @@ footer{
 
 .experience-description,
 .empty-state {
-    color: var(--text-muted);
+    color:var(--ink);
+}
+
+.empty-state-project {
+    color: white;
+    font-size: 48px;
+    text-align: center;
+    padding: 200px;
 }
 
 .experience-status {

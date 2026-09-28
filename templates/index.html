@@ -37,19 +37,13 @@
             </div>
         </section>
 
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
+        <br><br><br><br><br><br>
 
         <!-- Personal Projects Section -->
         <section class="flip-card-section">
             <div class ="subheader-container">
                 <h2>My Personal Projects</h2>
             </div>
-            <br>
             {% for project in project_list %}
             <div class = "flip-cards-container">
 
@@ -71,7 +65,7 @@
                 </div>
             </div>
             {% empty %}
-            <p class="empty-state">
+            <p class="empty-state-project">
                     No Project has been added yet!
             </p>
             {% endfor %}
