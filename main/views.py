@@ -25,7 +25,7 @@ def show_main(request):
             "Hover over me to see the dawg in me!"
         ),
         "last_login" : last_login,
-        "project_list": {},
+        "project_list": Project.objects.all(),
     }
     return render(request, "index.html", context)
 
