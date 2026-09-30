@@ -1,5 +1,7 @@
 from django.forms import ModelForm, TextInput, Textarea, MultipleChoiceField
 from django.forms.widgets import CheckboxSelectMultiple
+from django.core.exceptions import ValidationError
+from django.utils.html import strip_tags
 
 from main.models import Achievement, Experience, Project
 
@@ -77,6 +79,18 @@ class ExperienceForm(ModelForm):
                 }
             ),
         }
+
+    def clean_title(self):
+        title = strip_tags(self.cleaned_data["title"]).strip()
+        if not title:
+            raise ValidationError("Experience name can't contain only HTML tags.")
+        return title
+
+    def clean_description(self):
+        return strip_tags(self.cleaned_data["description"]).strip()
+
+    def clean_category(self):
+        return strip_tags(self.cleaned_data["category"]).strip()
 
 class ProjectForm(ModelForm):
     class Meta:

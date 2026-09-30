@@ -4,9 +4,10 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.decorators import login_required, permission_required
+from django.views.decorators.http import require_POST
 from django.core.exceptions import PermissionDenied
 from django.core import serializers
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from main.models import *
 from main.forms import *
@@ -49,26 +50,39 @@ def create_project(request):
 
 def get_experiences_json(request):
     title_query = request.GET.get("title", "").strip()
-    experiences = Experience.objects.all()
+    experiences = Experience.objects.prefetch_related('starred_by').all()
 
     if title_query:
         experiences = experiences.filter(title__icontains=title_query)
 
-    experiences_json = serializers.serialize("json", experiences, use_natural_foreign_keys=True)
-    return HttpResponse(experiences_json, content_type="application/json")
+    # Manually build the JSON data so we can add the Star logic
+    data = []
+    for experience in experiences:
+        starred_users = experience.starred_by.all()
+        is_starred = request.user in starred_users if request.user.is_authenticated else False
+        starred_by_names = ", ".join([u.username for u in starred_users])
+
+        data.append({
+            "pk" : str(experience.id),
+            "fields" : {
+                "title": experience.title,
+                "description": experience.description,
+                "category": experience.category,
+                "star_count": starred_users.count(),
+                "is_starred": is_starred,
+                "starred_by_names": starred_by_names,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 def show_experience(request):
     title_query = request.GET.get("title", "").strip()
-    experience_list = Experience.objects.all()
-    if title_query:
-        experience_list = experience_list.filter(title__icontains=title_query)
-
     context = {
         "name": "William Jesiel",
-        "experience_list": experience_list,
         "title_query": title_query,
+        "form": ExperienceForm(),
     }
-
     return render(request, "experience.html", context)
 
 @login_required(login_url="/login/")
@@ -273,6 +287,24 @@ def toggle_flame(request, achievement_id):
         else:
             achievement.flamed_by.add(request.user)
     return redirect("main:show_achievement")
+
+@require_POST
+def create_experience_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Only the portfolio owner can add experiences."},
+            status=403,
+        )
+
+    form = ExperienceForm(request.POST)
+    if form.is_valid():
+        experience = form.save()
+        return JsonResponse(
+            {"message": "Experience added successfully.", "pk": str(experience.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
 
 
 

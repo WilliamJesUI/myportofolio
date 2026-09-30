@@ -12,6 +12,7 @@ urlpatterns = [
     path("experience/<uuid:experience_id>/update/", update_experience, name="update_experience"),
     path("experiences/<uuid:experience_id>/delete/", delete_experience, name="delete_experience"),
     path("experience/<uuid:experience_id>/star/", toggle_star, name="toggle_star"),
+    path("experiences/add-ajax/", create_experience_ajax, name="create_experience_ajax"),
     path("achievement/<uuid:achievement_id>/flame/", toggle_flame, name="toggle_flame"),
     path("api/experiences/", get_experiences_json, name="get_experiences_json"),
     path("achievement/", show_achievement, name="show_achievement"),

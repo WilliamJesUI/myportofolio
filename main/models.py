@@ -41,7 +41,6 @@ class Experience(models.Model):
         choices=EXPERIENCE_CHOICES,
         default="full-time",
     )
-    thumbnail = models.URLField(blank=True, null=True)
     starred_by = models.ManyToManyField(
         User, related_name="starred_experiences", blank=True
     )
