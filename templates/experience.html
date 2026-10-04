@@ -8,9 +8,6 @@
             <div class="container">
                 <p class="section-kicker">My Experience</p>
                 <div class="project-header">
-                    <button class="button button-secondary" onclick="showToast('System Notification', 'Experience loaded successfully!', 'success')">
-                        Test Toast Notification
-                    </button>
                     <h1>My Experiences</h1>
                     {% if user.is_superuser %}
                         <button type="button"
@@ -34,7 +31,6 @@
                            placeholder="Search by experience name"
                            class="project-search__input"
                            aria-label="Search by experience name">
-                    <button type="submit" class="button">Search</button>
                 </form>
 
                 <!-- Loading State -->
@@ -104,6 +100,8 @@
             const articleElement = document.createElement('article');
             articleElement.className = 'experience-card';
 
+            const updateUrl = "{% url 'main:update_experience' '00000000-0000-0000-0000-000000000000' %}"
+            .replace('00000000-0000-0000-0000-000000000000', experienceId);
             const deleteUrl = "{% url 'main:delete_experience' '00000000-0000-0000-0000-000000000000' %}"
             .replace('00000000-0000-0000-0000-000000000000', experienceId);
             const starUrl = "{% url 'main:toggle_star' '00000000-0000-0000-0000-000000000000' %}"
@@ -113,6 +111,13 @@
             ? `<form method="post" action="${deleteUrl}" style="display:inline;">
                 {% csrf_token %}
                 <button type="submit" class="button button-danger" onclick="return confirm('Are you sure you want to delete this experience?');">Delete</button>
+            </form>`
+            : '';
+
+            const updateHtml = IS_SUPERUSER
+            ? `<form method="post" action="${updateUrl}" style="display:inline;">
+                {% csrf_token %}
+                <button type="submit" class="button button-danger";">Update</button>
             </form>`
             : '';
 
@@ -138,7 +143,7 @@
                             <span class="star-count">${escapeHtml(experience.star_count)}</span>
                         </button>
                     </form>
-
+                    ${updateHtml}
                     ${deleteHtml}
                 </div>
             </div>

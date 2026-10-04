@@ -138,15 +138,13 @@ def delete_experience(request, experience_id):
 
 def show_achievement(request):
     name_query = request.GET.get("name", "").strip()
-    achievement_list = Achievement.objects.all()
 
-    if name_query:
-        achievement_list = achievement_list.filter(name__icontains=name_query)
+
 
     context = {
         "name": "William Jesiel",
-        "achievement_list": achievement_list,
         "name_query": name_query,
+        "form": AchievementForm(),
     }
     return render(request, "achievement.html", context)
 
@@ -191,28 +189,37 @@ def update_achievement(request, achievement_id):
 
 def get_achievements_json(request):
     name_query = request.GET.get("name", "" ).strip()
-    achievements = Achievement.objects.all()
+    achievements = Achievement.objects.prefetch_related('flamed_by').all()
 
     if name_query:
         achievements = achievements.filter(name__icontains=name_query)
 
-    achievements_json = serializers.serialize("json", achievements, use_natural_foreign_keys=True)
-    return HttpResponse(achievements_json, content_type="application/json")
+    data = []
+    for achievement in achievements:
+        flamed_users = achievement.flamed_by.all()
+        is_flamed = request.user in flamed_users if request.user.is_authenticated else False
+        flamed_by_names = ", ".join([u.username for u in flamed_users])
+
+        data.append({
+            "pk": str(achievement.id),
+            "fields": {
+                "name": achievement.name,
+                "description": achievement.description,
+                "thumbnail": achievement.thumbnail,
+                "flame_count": flamed_users.count(),
+                "is_flamed": is_flamed,
+                "flamed_by_names": flamed_by_names,
+            }
+        })
+
+    return JsonResponse(data, safe=False)
 
 def show_achievements(request):
-    json_response = get_achievements_json(request)
-
-    achievements = serializers.deserialize(
-        "json",
-        json_response.content.decode("utf-8"),
-    )
-    achievements = [achievement.object for achievement in achievements]
     name_query = request.GET.get("name", "").strip()
 
     context = {
-        "name": "William",
-        "achievement_list": achievements,
-        "name_query": name_query,
+        "name": "Burhan",
+        "name_query": name_query
     }
     return render(request, "achievement.html", context)
 
@@ -301,6 +308,24 @@ def create_experience_ajax(request):
         experience = form.save()
         return JsonResponse(
             {"message": "Experience added successfully.", "pk": str(experience.id)},
+            status=201,
+        )
+
+    return JsonResponse({"errors": form.errors.get_json_data()}, status=400)
+
+@require_POST
+def create_achievement_ajax(request):
+    if not request.user.is_superuser:
+        return JsonResponse(
+            {"message": "Only the portfolio owner can add achievements."},
+            status=403,
+        )
+
+    form = AchievementForm(request.POST)
+    if form.is_valid():
+        achievement = form.save()
+        return JsonResponse(
+            {"message": "Achievement added successfully.", "pk": str(achievement.id)},
             status=201,
         )
 

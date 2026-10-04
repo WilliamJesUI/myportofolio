@@ -36,3 +36,10 @@ I asked AI (Claude) for help in the creation of the update feature because I was
 No reflective questions this week
 
 AI disclosure. Used claude in helping creating the editor user. I prompted to teach me the concept and general idea on what user groups are and how might I implement to my code. He gave me the syntax and code snippet which I then modify and insert into my program. For the other features (starring, hiding UI, and login), I mainly refer to the tutorial and W3Schools as usual.
+
+### Assignment 5
+1. Debouncing will delay the calling of a function by a certain time period. Once the time period has passed and there is not event it will then send a request to the server. If there is no debouncing, everytime the user type. It would send a request for every key the user press since that is an event.
+2. Await's job is to “wait” for a Promise to finish before moving on to the next line of code. Without await, a Promise will keep running in the background, and the next line of code will execute immediately without waiting for the result.
+3. Cross-Site Scripting (XSS) is a form of injection attack where malicious users will usually submit Javascript code as input. Django templates are safer because they do the escaping for you so no input can do any harm.
+
+AI disclosure. Made use of claude in order to help read console error messages. I prompted it to help me read console errors and navigate through the errors in order to find my bug. The bug I encountered was that there was a null value being accessed when refactoring the achievement page. I also used claude to help explain concepts like XSS, fetch, and Javascript. Prompting it to give me short code snippets as examples and for reference.

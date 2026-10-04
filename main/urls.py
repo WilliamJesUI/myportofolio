@@ -19,6 +19,7 @@ urlpatterns = [
     path("achievement/add/", create_achievement, name="create_achievement"),
     path("achievement/<uuid:achievement_id>/update/", update_achievement, name="update_achievement"),
     path("achievements/<uuid:achievement_id>/delete/", delete_achievement, name="delete_achievement"),
+    path("achievements/add-ajax/", create_achievement_ajax, name="create_achievement_ajax"),
     path("api/achievements/", get_achievements_json, name="get_achievements_json"),
     path("register/", register, name="register"),
     path("login/", login_user, name="login"),

@@ -42,6 +42,18 @@ class AchievementForm(ModelForm):
             ),
         }
 
+    def clean_name(self):
+        name = strip_tags(self.cleaned_data["name"]).strip()
+        if not name:
+            raise ValidationError("Achievement name can't contain only HTML tags.")
+        return name
+
+    def clean_description(self):
+        return strip_tags(self.cleaned_data["description"]).strip()
+
+    def clean_category(self):
+        return strip_tags(self.cleaned_data["thumbnail"]).strip()
+
 
 
 class ExperienceForm(ModelForm):
