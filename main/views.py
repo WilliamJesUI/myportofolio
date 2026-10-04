@@ -218,7 +218,7 @@ def show_achievements(request):
     name_query = request.GET.get("name", "").strip()
 
     context = {
-        "name": "Burhan",
+        "name": "William",
         "name_query": name_query
     }
     return render(request, "achievement.html", context)
