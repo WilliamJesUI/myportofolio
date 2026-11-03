@@ -80,16 +80,8 @@ class MainTest(TestCase):
         Experience.objects.all().delete()
         response = self.client.get(reverse("main:show_experience"))
 
-        self.assertContains(response, "No experience has been added yet.")
+        self.assertContains(response, "No experience has been added or found yet.")
 
-    def test_completed_experience(self):
-        self.experience.ended_at = timezone.now()
-        self.experience.save()
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertFalse(self.experience.is_ongoing)
-        self.assertContains(response, "Completed")
-        self.assertNotContains(response, "Ongoing")
 
     def test_achievement_model(self):
         self.assertEqual(str(self.achievement), "Hackathon")
@@ -111,5 +103,5 @@ class MainTest(TestCase):
         Achievement.objects.all().delete()
         response = self.client.get(reverse("main:show_achievement"))
 
-        self.assertContains(response, "William is kinda achievementless rn...")
+        self.assertContains(response, "No Achievements have been added or found yet.")
 
