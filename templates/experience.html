@@ -74,6 +74,10 @@
         const searchInput = document.getElementById('search-input');
         const experienceForm = document.getElementById('project-form');
         const editForm = document.getElementById('edit-experience-form');
+        const deleteModal = document.getElementById('delete-experience-modal');
+        const deleteName = document.getElementById('delete-experience-name');
+        const confirmDeleteButton = document.getElementById('confirm-delete-button');
+        let pendingDeleteId = null;
 
         // ---------- Helpers ----------
         function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
@@ -251,6 +255,28 @@
             });
         }
 
+        // ---------- DELETE ----------
+        if (confirmDeleteButton) {
+            confirmDeleteButton.addEventListener('click', async function () {
+                if (!pendingDeleteId) return;
+                confirmDeleteButton.disabled = true;
+                try {
+                    await writeExperience(
+                        experienceEndpoint(DETAIL_EXPERIENCE_ENDPOINT, pendingDeleteId),
+                        'DELETE'
+                    );
+                    deleteModal.hidePopover();
+                    pendingDeleteId = null;
+                    showToast('Success', 'Experience deleted.', 'success');
+                    await fetchExperiences(searchInput.value.trim());
+                } catch (error) {
+                    showToast('Request failed', error.message, 'error');
+                } finally {
+                    confirmDeleteButton.disabled = false;
+                }
+            });
+        }
+
         // ---------- Star / Update / Delete clicks ----------
         gridContainer.addEventListener('click', async function (event) {
             const button = event.target.closest('button[data-action]');
@@ -267,6 +293,16 @@
                 editForm.elements.category.value = exp.category;
                 editForm.dataset.id = exp.id;
                 document.getElementById('edit-experience-modal').showPopover();
+                return;
+            }
+
+            // Opening Delete Warning Pop-up
+            if (action === 'delete') {
+                const exp = currentExperiences.find(e => e.id === button.dataset.id);
+                if (!exp || !deleteModal) return;
+                pendingDeleteId = exp.id;               // remember which one
+                deleteName.textContent = exp.title;     // textContent is safe, no escaping needed
+                deleteModal.showPopover();
                 return;
             }
 
