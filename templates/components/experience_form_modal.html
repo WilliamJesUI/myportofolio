@@ -45,8 +45,12 @@
         </form>
     </div>
 </div>
+{% endif %}
+
+
 
 {# ---------- Edit modal ---------- #}
+{% if user.is_superuser or perms.main.change_experience %}
 <div id="edit-experience-modal"
      class="project-form-modal"
      popover="auto"
@@ -90,7 +94,9 @@
         </form>
     </div>
 </div>
+{% endif %}
 
+{% if user.is_superuser %}
 {# ------------- Delete modal ---------------- #}
 <div id="delete-experience-modal"
      class="project-delete-modal"

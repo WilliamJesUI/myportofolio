@@ -48,9 +48,7 @@
         </section>
     </main>
 
-    {% if user.is_superuser %}
-        {% include "components/experience_form_modal.html" %}
-    {% endif %}
+    {% include "components/experience_form_modal.html" %}
 
     <script>
         // ---------- Configuration ----------
@@ -59,6 +57,7 @@
         const STAR_EXPERIENCE_ENDPOINT = "{% url 'api:experience-star' '00000000-0000-0000-0000-000000000000' %}";
         const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === 'true';
         const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === 'true';
+        const CAN_EDIT = "{{ perms.main.change_experience|yesno:'true, false' }}" === 'true';
         const SEARCH_DEBOUNCE_DELAY = 300;
 
         let experiencesAbortController;
@@ -140,7 +139,7 @@
                         data-action="delete" data-id="${id}">Delete</button>`
                 : '';
 
-            const updateHtml = IS_SUPERUSER
+            const updateHtml = CAN_EDIT
                 ? `<button type="button" class="button"
                         data-action="update" data-id="${id}">Update</button>`
                 : '';
