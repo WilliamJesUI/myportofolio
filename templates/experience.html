@@ -180,7 +180,6 @@
             experiencesAbortController = new AbortController();
 
             try {
-                displayPageSection({ showLoading: true });
                 const url = new URL(BASE_EXPERIENCES_ENDPOINT, window.location.origin);
                 if (searchQuery) url.searchParams.set('title', searchQuery);
                 const response = await fetch(url, {

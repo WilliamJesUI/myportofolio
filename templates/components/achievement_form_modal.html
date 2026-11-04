@@ -1,9 +1,12 @@
+{% if user.is_superuser %}
+
+{# ---------- Add modal ---------- #}
 <div id="add-achievement-modal"
      class="project-form-modal"
      popover="auto"
      role="dialog"
      aria-modal="true"
-     aria-labelledby="add-achievement-modal-title">
+     aria-labelledby="add-achievement-modal-name">
     <button type="button"
             class="project-form-modal__backdrop"
             popovertarget="add-achievement-modal"
@@ -17,21 +20,21 @@
                 popovertargetaction="hide"
                 aria-label="Close add achievement form">×</button>
 
-        <h2 id="add-project-modal-title">Add a New Achievement</h2>
-        <form id="project-form"
-              method="post"
-              action="{% url 'main:create_achievement' %}"
-              class="project-form">
+        <h2 id="add-achievement-modal-title">Add a New Achievement</h2>
+        <form id="project-form" class="project-form">
             {% csrf_token %}
-            {% for field in form %}
-                <div class="form-group">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% for error in field.errors %}
-                        <p class="form-error">{{ error }}</p>
-                    {% endfor %}
-                </div>
-            {% endfor %}
+            <div class="form-group">
+                <label for="add-name">Name</label>
+                <input type="text" id="add-name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="add-description">Description</label>
+                <textarea id="add-description" name="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="add-thumbnail">Image Thumbnail</label>
+                <input type="text" id="add-thumbnail" name="thumbnail" required>
+            </div>
             <div class="project-form-modal__actions">
                 <button type="button"
                         class="button button-secondary"
@@ -42,38 +45,88 @@
         </form>
     </div>
 </div>
+{% endif %}
 
-<div id="delete-project-{{ experience.id }}"
+
+
+{# ---------- Edit modal ---------- #}
+{% if user.is_superuser or perms.main.change_achievement %}
+<div id="edit-achievement-modal"
+     class="project-form-modal"
+     popover="auto"
+     role="dialog"
+     aria-modal="true"
+     aria-labelledby="edit-achievement-modal-name">
+    <button type="button"
+            class="project-form-modal__backdrop"
+            popovertarget="edit-achievement-modal"
+            popovertargetaction="hide"
+            aria-label="Close edit achievement form"></button>
+
+    <div class="project-form-modal__content">
+        <button type="button"
+                class="project-form-modal__close"
+                popovertarget="edit-achievement-modal"
+                popovertargetaction="hide"
+                aria-label="Close edit achievement form">×</button>
+
+        <h2 id="edit-achievement-modal-name">Edit Achievement</h2>
+        <form id="edit-achievement-form" class="project-form">
+            <div class="form-group">
+                <label for="edit-name">Name</label>
+                <input type="text" id="edit-name" name="name" required>
+            </div>
+            <div class="form-group">
+                <label for="edit-description">Description</label>
+                <textarea id="edit-description" name="description" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="edit-thumbnail">Image Thumbnail</label>
+                <input type="text" id="edit-thumbnail" name="thumbnail" required>
+            </div>
+            <div class="project-form-modal__actions">
+                <button type="button"
+                        class="button button-secondary"
+                        popovertarget="edit-achievement-modal"
+                        popovertargetaction="hide">Cancel</button>
+                <button type="submit" class="button">Save Changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% if user.is_superuser %}
+{# ------------- Delete modal ---------------- #}
+<div id="delete-achievement-modal"
      class="project-delete-modal"
      popover="auto"
      role="dialog"
      aria-modal="true"
-     aria-labelledby="delete-project-title-{{ experience.id }}">
+     aria-labelledby="delete-achievement-title">
     <button type="button"
             class="project-delete-modal__backdrop"
-            popovertarget="delete-project-{{ experience.id }}"
+            popovertarget="delete-achievement-modal"
             popovertargetaction="hide"
             aria-label="Close"></button>
     <div class="project-delete-modal__content">
         <button type="button"
                 class="project-delete-modal__close"
-                popovertarget="delete-project-{{ experience.id }}"
+                popovertarget="delete-achievement-modal"
                 popovertargetaction="hide"
                 aria-label="Close">×</button>
-        <h2 id="delete-project-title-{{ experience.id }}">Delete Experience?</h2>
-        <p>
-            Are you sure in deleting
-            <strong>{{ experience.name }}</strong>?
-        </p>
+        <h2 id="delete-experience-title">Delete Achievement?</h2>
+        <p>Are you sure you want to delete <strong id="delete-achievement-name"></strong>?</p>
         <div class="project-delete-modal__actions">
             <button type="button"
                     class="button button-secondary"
-                    popovertarget="delete-project-{{ experience.id }}"
+                    popovertarget="delete-achievement
+                    -modal"
                     popovertargetaction="hide">Cancel</button>
-            <form method="post" action="{% url 'main:delete_experience' experience.id %}">
-                {% csrf_token %}
-                <button type="submit" class="button button-danger">Yes</button>
-            </form>
+            <button type="button" id="confirm-delete-button" class="button button-danger">Yes, delete</button>
         </div>
     </div>
 </div>
+
+{% endif %}
+

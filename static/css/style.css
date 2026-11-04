@@ -452,8 +452,7 @@ footer{
 }
 
 .project-grid .experience-card {
-    display: flex;
-    flex-direction: column;
+    display: grid;
 }
 
 .project-image {
