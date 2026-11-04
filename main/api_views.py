@@ -7,9 +7,9 @@ from rest_framework.decorators import (
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
-from main.models import Achievement, Experience
+from main.models import Achievement, Experience, Project
 from main.permissions import IsPortfolioOwnerOrReadOnly, IsPortfolioOwnerOrEditorOrReadOnly
-from main.serializers import AchievementSerializer, ExperienceSerializer
+from main.serializers import AchievementSerializer, ExperienceSerializer, ProjectSerializer
 
 # Achievement Functions
 @api_view(["GET", "HEAD", "POST"])
@@ -119,5 +119,48 @@ def experience_star(request, experience_id):
         experience.starred_by.add(request.user)
     serializer = ExperienceSerializer(experience, context={"request": request})
     return Response(serializer.data)
+
+# Project Functions
+@api_view(["GET", "HEAD", "POST"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsPortfolioOwnerOrReadOnly])
+def project_list(request):
+    if request.method in ("GET", "HEAD"):
+        projects = Project.objects.order_by("name", "id")
+        name = request.query_params.get("name", "").strip()
+        if name:
+            projects = projects.filter(title__icontains=name)
+        serializer = ProjectSerializer(
+            projects, many=True, context={"request": request},
+        )
+        return Response(serializer.data)
+    serializer = ProjectSerializer(data=request.data, context={"request": request})
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+@api_view(["GET", "HEAD", "PUT", "PATCH", "DELETE"])
+@authentication_classes([SessionAuthentication])
+@permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
+def project_detail(request, project_id):
+    project = get_object_or_404(Experience.objects, pk=project_id,)
+
+    if request.method in ("GET", "HEAD"):
+        serializer = ExperienceSerializer(project, context={"request": request})
+        return Response(serializer.data)
+
+    if request.method == "DELETE":
+        project.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    serializer = ProjectSerializer(
+        project, data=request.data, partial=request.method == "PATCH",
+        context={"request": request},
+    )
+
+    serializer.is_valid(raise_exception=True)
+    serializer.save()
+    return Response(serializer.data)
+
 
 

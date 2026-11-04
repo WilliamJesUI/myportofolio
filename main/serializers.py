@@ -78,7 +78,7 @@ class AchievementSerializer(serializers.ModelSerializer):
 
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
-            model = Achievement
+            model = Project
             fields = [
                 "id", "name", "description", "thumbnail", "download_url"
             ]
