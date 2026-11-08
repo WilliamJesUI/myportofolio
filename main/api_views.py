@@ -143,10 +143,10 @@ def project_list(request):
 @authentication_classes([SessionAuthentication])
 @permission_classes([IsPortfolioOwnerOrEditorOrReadOnly])
 def project_detail(request, project_id):
-    project = get_object_or_404(Experience.objects, pk=project_id,)
+    project = get_object_or_404(Project.objects, pk=project_id,)
 
     if request.method in ("GET", "HEAD"):
-        serializer = ExperienceSerializer(project, context={"request": request})
+        serializer = ProjectSerializer(project, context={"request": request})
         return Response(serializer.data)
 
     if request.method == "DELETE":

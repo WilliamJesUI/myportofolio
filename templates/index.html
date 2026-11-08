@@ -40,6 +40,21 @@
         <br><br><br><br><br><br>
 
         <!-- Personal Projects Section -->
+        <!-- Loading State -->
+        <div id="loading" class="empty-state hide">
+            <p>Loading Projects...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="error" class="empty-state hide">
+            <p>Failed to load Project data. Please try again.</p>
+        </div>
+
+        <!-- Empty State -->
+        <div id="empty" class="empty-state hide">
+            <p>No Projects have been added or found yet.</p>
+        </div>
+        <!-- Project Grid -->
         <section class="flip-card-section">
             <div class ="subheader-container">
                 <h2>My Personal Projects</h2>
@@ -49,41 +64,265 @@
                     </button>
                 {% endif %}
             </div>
-            {% for project in project_list %}
-            <div class = "flip-cards-container">
+            <div id="grid" class="hide">
 
-                <div class="flip-card">
-                    <div class="flip-card-inner">
-                        <div class="flip-card-front">
-                            <img class = flip-card-img src="{{ project.thumbnail }}" alt="{{ project.name }}">
-                        </div>
-                        <div class="flip-card-back">
-                            <h3>{{ project.name }}</h3>
-                            <p>{{ project.description }}</p>
-                            <a href = "{{ project.download_url }}" target="_blank">Download here!</a>
-                        </div>
-                    </div>
-                </div>
-                <div class="project-description-container">
-                    <h2>{{ project.name }}</h2>
-                    <p>{{ project.description }}</p>
-                    {% if user.is_superuser %}
-                        <button type="button" class="button"
-                                data-action="edit-project"
-                                data-id="{{ project.id }}"
-                                data-name="{{ project.name }}"
-                                data-description="{{ project.description }}"
-                                data-thumbnail="{{ project.thumbnail }}"
-                                data-download-url="{{ project.download_url }}">Edit</button>
-                    {% endif %}
-                </div>
             </div>
-            {% empty %}
-            <p class="empty-state-project">
-                    No Project has been added yet!
-            </p>
-            {% endfor %}
         </section>
         {% include "components/project_form_modal.html" %}
     </main>
-    {% endblock content %}
+
+<script>
+    // ---------- Configuration ----------
+    const BASE_PROJECTS_ENDPOINT = "{% url 'api:project-list' %}";
+    const DETAIL_PROJECTS_ENDPOINT = "{% url 'api:project-detail' '00000000-0000-0000-0000-000000000000' %}";
+    const IS_SUPERUSER = "{{ user.is_superuser|yesno:'true,false' }}" === 'true';
+    const IS_AUTHENTICATED = "{{ user.is_authenticated|yesno:'true,false' }}" === 'true';
+    const CAN_EDIT = "{{ perms.main.change_project|yesno:'true, false' }}" === 'true';
+
+    let projectsAbortController;
+
+    // ---------- DOM elements ----------
+    const loadingState = document.getElementById('loading');
+    const errorState = document.getElementById('error');
+    const emptyState = document.getElementById('empty');
+    const gridContainer = document.getElementById('grid');
+    const editForm = document.getElementById('edit-project-form');
+    const deleteModal = document.getElementById('delete-project-modal');
+    const deleteName = document.getElementById('delete-project-name');
+    const confirmDeleteButton = document.getElementById('confirm-delete-button');
+    const projectForm = document.getElementById('add-   project-form');
+
+
+    function displayPageSection({ showLoading = false, showError = false, showEmpty = false, showGrid = false }) {
+        loadingState.classList.toggle('hide', !showLoading);
+        errorState.classList.toggle('hide', !showError);
+        emptyState.classList.toggle('hide', !showEmpty);
+        gridContainer.classList.toggle('hide', !showGrid);
+    }
+
+    function escapeHtml(value) {
+        return String(value ?? '')
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+    }
+
+    function getCookie(name) {
+        const prefix = `${name}=`;
+        const cookie = document.cookie.split(';').map(value => value.trim())
+            .find(value => value.startsWith(prefix));
+        return cookie ? decodeURIComponent(cookie.slice(prefix.length)) : null;
+    }
+
+    function projectEndpoint(pattern, id) {
+        return pattern.replace('00000000-0000-0000-0000-000000000000', id);
+    }
+
+    function apiErrorMessage(data, status) {
+        const messages = Object.values(data).flat().filter(value => typeof value === 'string');
+        return messages.join(' ') || `Request failed (HTTP ${status}).`;
+    }
+
+    async function writeProject(url, method, payload) {
+        const response = await fetch(url, {
+            method,
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: payload === undefined ? undefined : JSON.stringify(payload),
+        });
+        if (response.status === 204) return null;
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(apiErrorMessage(data, response.status));
+        return data;
+    }
+
+    function buildProjectCardElement(project) {
+        const article = document.createElement('article');
+        article.className = 'project-card';
+
+        const id = escapeHtml(project.id);
+
+        const deleteHtml = IS_SUPERUSER
+            ? `<button type="button" class="button button-danger"
+                    data-action="delete" data-id="${id}">Delete</button>`
+            : '';
+
+        const updateHtml = CAN_EDIT
+            ? `<button type="button" class="button"
+                    data-action="update" data-id="${id}">Update</button>`
+            : '';
+
+        const imageHtml = project.thumbnail
+            ? `<img class = flip-card-img src="${ project.thumbnail }" alt="${ project.name }">`
+            : '';
+
+        const download_url_Html = project.download_url
+            ? '<a href = "${ escapeHtml(project.download_url) }" target="_blank">Download here!</a>'
+            : '';
+
+        article.innerHTML = `
+        <div class = "flip-cards-container">
+            <div class="flip-card">
+                <div class="flip-card-inner">
+                    <div class="flip-card-front">
+                        ${imageHtml}
+                    </div>
+                    <div class="flip-card-back">
+                        <h3>${ escapeHtml(project.name) }</h3>
+                        <p>${ escapeHtml(project.description) }</p>
+                        ${download_url_Html}
+                    </div>
+                </div>
+            </div>
+            <div class="project-description-container">
+                <h2>${ escapeHtml(project.name) }</h2>
+                <p>${ escapeHtml(project.description) }</p>
+                ${updateHtml}
+                ${deleteHtml}
+            </div>
+        </div>
+        `;
+
+        return article;
+    }
+
+    // ---------- Loading the list ----------
+        async function fetchProjects(searchQuery = '') {
+            if (projectsAbortController) projectsAbortController.abort();
+            projectsAbortController = new AbortController();
+
+            try {
+                const url = new URL(BASE_PROJECTS_ENDPOINT, window.location.origin);
+                if (searchQuery) url.searchParams.set('name', searchQuery);
+                const response = await fetch(url, {
+                    headers: { Accept: 'application/json' },
+                    signal: projectsAbortController.signal,
+                });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const projects = await response.json();
+                currentProjects = projects;
+                gridContainer.replaceChildren(...projects.map(buildProjectCardElement));
+                displayPageSection({
+                    showGrid: projects.length > 0,
+                    showEmpty: projects.length === 0,
+                });
+            } catch (error) {
+                if (error.name === 'AbortError') return;
+                console.error(error);
+                displayPageSection({ showError: true });
+            }
+        }
+
+    // ---------- Add ----------
+    async function addProject(event) {
+        event.preventDefault();
+        const submitButton = projectForm.querySelector('button[type="submit"]');
+        submitButton.disabled = true;
+        try {
+            const fields = new FormData(projectForm);
+            const payload = Object.fromEntries(
+                ['name', 'description', 'thumbnail', 'download_url'].map(name => [name, fields.get(name)])
+            );
+            await writeProject(BASE_PROJECTS_ENDPOINT, 'POST', payload);
+            projectForm.reset();
+            document.getElementById('add-project-modal').hidePopover();
+            showToast('Success', 'Project created.', 'success');
+            await fetchProjects();
+        } catch (error) {
+            showToast('Could not create project', error.message, 'error');
+        } finally {
+            submitButton.disabled = false;
+        }
+    }
+
+    if (projectForm) {
+        projectForm.addEventListener('submit', addProject);
+    }
+
+    // ---------- Edit (PATCH) ----------
+    if (editForm) {
+        editForm.addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const submitButton = editForm.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            try {
+                const fields = new FormData(editForm);
+                const payload = Object.fromEntries(
+                    ['name', 'description', 'thumbnail', 'download_url'].map(name => [name, fields.get(name)])
+                );
+                await writeProject(
+                    projectEndpoint(DETAIL_PROJECTS_ENDPOINT, editForm.dataset.id),
+                    'PATCH', payload
+                );
+                document.getElementById('edit-project-modal').hidePopover();
+                showToast('Success', 'Project updated.', 'success');
+                await fetchProjects();
+            } catch (error) {
+                showToast('Could not update project', error.message, 'error');
+            } finally {
+                submitButton.disabled = false;
+            }
+        });
+    }
+
+    // ---------- DELETE ----------
+    if (confirmDeleteButton) {
+        confirmDeleteButton.addEventListener('click', async function () {
+            if (!pendingDeleteId) return;
+            confirmDeleteButton.disabled = true;
+            try {
+                await writeProject(
+                    projectEndpoint(DETAIL_PROJECTS_ENDPOINT, pendingDeleteId),
+                    'DELETE'
+                );
+                deleteModal.hidePopover();
+                pendingDeleteId = null;
+                showToast('Success', 'Project deleted.', 'success');
+                await fetchProjects();
+            } catch (error) {
+                showToast('Request failed', error.message, 'error');
+            } finally {
+                confirmDeleteButton.disabled = false;
+            }
+        });
+    }
+
+    gridContainer.addEventListener('click', async function (event) {
+        const button = event.target.closest('button[data-action]');
+        if (!button || button.disabled) return;
+
+        const action = button.dataset.action;
+
+        // Opening the edit form is not a network request, so handle it first
+        if (action === 'update') {
+            const project = currentProjects.find(e => e.id === button.dataset.id);
+            if (!project || !editForm) return;
+            editForm.elements.name.value = project.name;
+            editForm.elements.description.value = project.description;
+            editForm.elements.thumbnail.value = project.thumbnail;
+            editForm.elements.download_url.value = project.download_url;
+            editForm.dataset.id = project.id;
+            document.getElementById('edit-project-modal').showPopover();
+            return;
+        }
+
+        // Opening Delete Warning Posp-up
+        if (action === 'delete') {
+            const project = currentProjects.find(e => e.id === button.dataset.id);
+            if (!project || !deleteModal) return;
+            pendingDeleteId = project.id;               // remember which one
+            deleteName.textContent = project.name;     // textContent is safe, no escaping needed
+            deleteModal.showPopover();
+            return;
+        }
+
+        // ---------- Start ----------
+    });
+    fetchProjects();
+</script>
+{% endblock content %}
