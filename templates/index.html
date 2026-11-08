@@ -43,6 +43,11 @@
         <section class="flip-card-section">
             <div class ="subheader-container">
                 <h2>My Personal Projects</h2>
+                {% if user.is_superuser %}
+                    <button type="button" class="button" popovertarget="add-project-modal">
+                        + Add Project
+                    </button>
+                {% endif %}
             </div>
             {% for project in project_list %}
             <div class = "flip-cards-container">
@@ -62,6 +67,15 @@
                 <div class="project-description-container">
                     <h2>{{ project.name }}</h2>
                     <p>{{ project.description }}</p>
+                    {% if user.is_superuser %}
+                        <button type="button" class="button"
+                                data-action="edit-project"
+                                data-id="{{ project.id }}"
+                                data-name="{{ project.name }}"
+                                data-description="{{ project.description }}"
+                                data-thumbnail="{{ project.thumbnail }}"
+                                data-download-url="{{ project.download_url }}">Edit</button>
+                    {% endif %}
                 </div>
             </div>
             {% empty %}
@@ -70,5 +84,6 @@
             </p>
             {% endfor %}
         </section>
+        {% include "components/project_form_modal.html" %}
     </main>
     {% endblock content %}

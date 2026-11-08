@@ -1,0 +1,71 @@
+{# Add Project #}
+<div id="add-project-modal" class="project-form-modal" popover>
+    <button type="button" class="project-form-modal__backdrop"
+            popovertarget="add-project-modal" popovertargetaction="hide"
+            aria-label="Close"></button>
+    <div class="project-form-modal__content">
+        <button type="button" class="project-form-modal__close"
+                popovertarget="add-project-modal" popovertargetaction="hide"
+                aria-label="Close">&times;</button>
+        <h2>Add Project</h2>
+        <form id="add-project-form" class="project-form">
+            <div class="form-group">
+                <label for="add-project-name">Name</label>
+                <input type="text" id="add-project-name" name="name" required maxlength="100">
+            </div>
+            <div class="form-group">
+                <label for="add-project-description">Description</label>
+                <textarea id="add-project-description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="add-project-thumbnail">Thumbnail URL</label>
+                <input type="url" id="add-project-thumbnail" name="thumbnail" placeholder="https://...">
+            </div>
+            <div class="form-group">
+                <label for="add-project-download">Download URL</label>
+                <input type="url" id="add-project-download" name="download_url" placeholder="https://...">
+            </div>
+            <div class="project-form-modal__actions">
+                <button type="button" class="button button-secondary"
+                        popovertarget="add-project-modal" popovertargetaction="hide">Cancel</button>
+                <button type="submit" class="button">Create</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{# Edit Project #}
+<div id="edit-project-modal" class="project-form-modal" popover>
+    <button type="button" class="project-form-modal__backdrop"
+            popovertarget="edit-project-modal" popovertargetaction="hide"
+            aria-label="Close"></button>
+    <div class="project-form-modal__content">
+        <button type="button" class="project-form-modal__close"
+                popovertarget="edit-project-modal" popovertargetaction="hide"
+                aria-label="Close">&times;</button>
+        <h2>Edit Project</h2>
+        <form id="edit-project-form" class="project-form">
+            <div class="form-group">
+                <label for="edit-project-name">Name</label>
+                <input type="text" id="edit-project-name" name="name" required maxlength="100">
+            </div>
+            <div class="form-group">
+                <label for="edit-project-description">Description</label>
+                <textarea id="edit-project-description" name="description" rows="4" required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="edit-project-thumbnail">Thumbnail URL</label>
+                <input type="url" id="edit-project-thumbnail" name="thumbnail">
+            </div>
+            <div class="form-group">
+                <label for="edit-project-download">Download URL</label>
+                <input type="url" id="edit-project-download" name="download_url">
+            </div>
+            <div class="project-form-modal__actions">
+                <button type="button" class="button button-secondary"
+                        popovertarget="edit-project-modal" popovertargetaction="hide">Cancel</button>
+                <button type="submit" class="button">Save</button>
+            </div>
+        </form>
+    </div>
+</div>
