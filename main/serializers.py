@@ -1,7 +1,7 @@
 from django.utils.html import strip_tags
 from rest_framework import serializers
 
-from main.models import Experience, Achievement
+from main.models import Achievement, Experience, Project
 
 class ExperienceSerializer(serializers.ModelSerializer):
     star_count = serializers.SerializerMethodField()
@@ -75,3 +75,25 @@ class AchievementSerializer(serializers.ModelSerializer):
 
     def get_flamed_by_names(self, obj):
         return ", ".join(user.username for user in obj.flamed_by.all())
+
+class ProjectSerializer(serializers.ModelSerializer):
+    class Meta:
+            model = Project
+            fields = [
+                "id", "name", "description", "thumbnail", "download_url"
+            ]
+    
+    def validate_name(self, value):
+        value = strip_tags(value).strip()
+        if not value:
+            raise serializers.ValidationError("Name cannot be empty.")
+        return value
+
+    def validate_description(self, value):
+        return strip_tags(value)
+
+    def validate_thumbnail(self, value):
+        return strip_tags(value)
+
+    def validate_download_url(self, value):
+        return strip_tags(value)

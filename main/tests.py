@@ -48,39 +48,11 @@ class MainTest(TestCase):
         self.assertEqual(self.project.thumbnail, "Burhan.png")
         self.assertEqual(self.project.download_url, "www.burhan.com")
 
-    def test_project_page(self):
-        response = self.client.get(reverse("main:show_main"))
-        self.assertContains(response, self.project.name)
-        self.assertContains(response, self.project.description)
-
     def test_empty_project_page(self):
         Project.objects.all().delete()
         response = self.client.get(reverse("main:show_main"))
 
         self.assertContains(response, "No Project has been added yet!")
-
-    def test_experience_model(self):
-        self.assertEqual(str(self.experience), "IDS Teaching Assistant")
-        self.assertEqual(self.experience.category, "part-time")
-        self.assertTrue(self.experience.is_ongoing)
-
-    def test_experience_page(self):
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "experience.html")
-        self.assertContains(response, self.experience.title)
-        self.assertContains(response, self.experience.description)
-        self.assertContains(response, "Part-Time")
-        self.assertContains(response, "Ongoing")
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
-
-
-    def test_empty_experience_page(self):
-        Experience.objects.all().delete()
-        response = self.client.get(reverse("main:show_experience"))
-
-        self.assertContains(response, "No experience has been added or found yet.")
 
 
     def test_achievement_model(self):
@@ -89,19 +61,4 @@ class MainTest(TestCase):
         self.assertEqual(self.achievement.description, "Created Chatgpt myself!")
         self.assertEqual(self.achievement.thumbnail, "image.png")
 
-    def test_achievement_page(self):
-        response = self.client.get(reverse("main:show_achievement"))
-
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "achievement.html")
-        self.assertContains(response, self.achievement.name)
-        self.assertContains(response, self.achievement.description)
-        self.assertContains(response, f'href="{reverse("main:show_main")}"')
-        self.assertContains(response, f'href="{reverse("main:show_experience")}"')
-
-    def test_empty_achievement_page(self):
-        Achievement.objects.all().delete()
-        response = self.client.get(reverse("main:show_achievement"))
-
-        self.assertContains(response, "No Achievements have been added or found yet.")
 

@@ -220,6 +220,9 @@ footer{
     padding-bottom: 100px 0;
     text-align: center;
 }
+.subheader-container button{
+    margin: 50px;
+}
 
 .subheader-container h2{
     font-family: "Space Grotesk", -apple-system, sans-serif;
