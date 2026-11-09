@@ -43,3 +43,36 @@ AI disclosure. Used claude in helping creating the editor user. I prompted to te
 3. Cross-Site Scripting (XSS) is a form of injection attack where malicious users will usually submit Javascript code as input. Django templates are safer because they do the escaping for you so no input can do any harm.
 
 AI disclosure. Made use of claude in order to help read console error messages. I prompted it to help me read console errors and navigate through the errors in order to find my bug. The bug I encountered was that there was a null value being accessed when refactoring the achievement page. I also used claude to help explain concepts like XSS, fetch, and Javascript. Prompting it to give me short code snippets as examples and for reference.
+
+### Assignment 6
+1. REST (Representational State Transfer) is an architectural style for designing web APIs. JSON is just a data format, it's possible that a website uses JSON but doesn't follow the REST architectural style making it not RESTful.
+
+PUT and PATCH update the database. PUT will update the entire row, every field. PATCH only updates a single field so it's a partial update. 
+
+Example PATCH vs PUT
+{ "id": 5, "title": "Teaching Assistant", "description": "I teach" }
+
+If you are interesed in updating only your title to maybe "Teaching Assistant PBP"
+PATCH /api/v1/experiences/5/
+{ "title": "Teaching Assitant PBP" }
+
+If you are interested in updating every single field
+PUT /api/v1/experiences/5/
+{ "title": "Lecturer PBP", "description": "I give lectures" }
+
+2. A serializer primarilty converts JSON to Python data types and Python data types to JSON. For GET, it converts model objects into Python data types that can be rendered as JSON (serialization). For POST/PATCH, it converts input into validated data that is ready to save (deserialization).
+
+The main advantage I notice is that the code is way shorter and simpler thus saving time. Then it also has built in validation. I also notice that it does the error message formatting for you.
+
+3. Authentication is used for logging in, it verifies who the user is using sessions. Authorization decides what that identified user may do, enforced in DRF through permission classes such as IsAuthenticated or a custom class that only lets the owner edit their own experience.
+
+It must be checked server side because hiding a button in the template can easily be bypassed by the inspect tool by removing the class hide.
+
+4. SessionAuthentication only verifies that the request comes from a browser with a valid session. What it doesn't make sure is that the request is actually sent by our site since browsers attach session cookie automatically. To determine if the request is not from a malicious website is to use CSRF token.
+
+force_authenticate makes a request behave as if the user is authenticated. It doesn't guarantee that a request sent is actually from the correct site. The CSRF check runs inside SessionAuthentication so a test using only force_authenticate can pass even if CSRF protection is missing. So it is not best for proving CSRF protection but it is useful for testing authorization and view behavior for a logged-in user.
+
+AI disclosure:
+The use of AI in this assignment was to help explain concepts of django REST framework. Sometimes, the explanation in the tutorial is not very detailed and I struggle to fully comprehend it. A short discussion with the AI chatbot (Claude) usually help clear some confusions. 
+Other than for understanding concepts, I used the AI to restructure my code. I noticed that my code has inconsistent indentation and spacing. The comments are also terribly formatted. I asked the AI to tidy up my code to make it more readable for me in the future. 
+The AI is also really good at detecting bugs. Basically since this assignment can be quite repetitive, when making the achievements I like to copy paste my experience code and then just change the variables accordingly. Sometimes I forget to change one experience variable to achievement and the AI help me spot that mistake. 
